@@ -1,26 +1,51 @@
-namespace ATMApp.Services
+public class BankingService
 {
-    public static class BankingServices
+    private double _lastTransactionAmount = 0;
+
+    public double CheckBalance(double balance)
     {
-        // Option 1: Pass-by-value
-        public static double GetBalance(double balance)
+        return balance;
+    }
+
+    public void Deposit(ref double balance, double depositAmount)
+    {
+        if (depositAmount > 0)
         {
-            return balance;
+            balance += depositAmount;
+            _lastTransactionAmount = depositAmount;
+        }
+        else
+        {
+            throw new ArgumentException("Invalid deposit amount. Please enter a positive value.");
+        }
+    }
+
+    public bool Withdraw(ref double balance, double withdrawAmount, out double newBalance)
+    {
+        newBalance = balance;
+        if (withdrawAmount <= 0)
+        {
+            throw new ArgumentException("Invalid withdrawal amount. Please enter a positive value.");
         }
 
-        // Option 2: ref (Deposit)
-        public static bool Deposit(ref double balance, double amount)
+        if (withdrawAmount <= balance)
         {
-            return false; //placeholder return value, replace with actual implementation
+            balance -= withdrawAmount;
+            newBalance = balance;
+            _lastTransactionAmount = -withdrawAmount;
+            return true;
         }
+        else
+        {
+            return false;
+        }
+    }
 
-        // Option 3: ref + out (Withdraw)
-        public static void Withdraw(
-            ref double balance,
-            double amount,
-            out bool isSuccessful)
-        {
-            isSuccessful = false; //placeholder value, replace with actual implementation
-        }
+    public void PrintMiniStatement(double balance)
+    {
+       
+        Console.WriteLine("--- Mini Statement ---");
+        Console.WriteLine($"Current Balance: Pesos {balance:F2}");
+        Console.WriteLine($"Last Transaction Amount: Pesos {_lastTransactionAmount:F2}");
     }
 }
